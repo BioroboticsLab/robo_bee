@@ -6,9 +6,7 @@
 % if splineInterpolated: rectified will be set on True because 
 % splineInterpolation works on rectified data
 % robot: bool -- want to track the robot (TRUE) or the follower (FALSE)
-function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot)
-
-        
+function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot)        
     if splineInterpolated
         rectified = 1;
     end 
