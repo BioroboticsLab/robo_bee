@@ -1,14 +1,14 @@
 function rectifyVideo(trackFolder)
 
-    videoPath = strcat(trackFolder, '\video.avi');
-    transPath = strcat(trackFolder,'\Transform.mat');
+    videoPath = strcat(trackFolder, '\video\original.avi');
+    transPath = strcat(trackFolder,'\video\Transform.mat');
 
     % we need the video and the transformation data
     Trans = importdata(transPath);
     v_in = VideoReader(videoPath);
 
     % for output
-    outputPath = 'here.avi'; %strcat(trackFolder, '\preprocessedData\rectifiedVideo.avi');
+    outputPath = strcat(trackFolder, '\video\rectified.avi');
     v_out = VideoWriter(outputPath);
     v_out.FrameRate = v_in.FrameRate;
     open(v_out);
