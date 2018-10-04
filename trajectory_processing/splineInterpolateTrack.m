@@ -1,15 +1,10 @@
 % splineInterpolation works ONLY on rectified tracks
-% robot: bool -- want to track the robot (TRUE) or the follower (FALSE)
-% write: bool -- want to write the result to the folder
-function spTrack = splineInterpolateTrack(trackFolder, robot, write)
+% filename: string -- the name of the output file eg. 'follower'
+function spTrack = splineInterpolateTrack(trackFolder, filename)
 
-    % get the rectified track for the given trackFolder
-    if robot
-        trackPath = strcat(trackFolder, '\trajectories\robot.rect'); 
-    else
-        trackPath = strcat(trackFolder, '\trajectories\followers.rect');
-    end
-    
+    % load the rectified to be spline interpolated
+    trackPath = strcat(trackFolder, '\trajectories\', filename, '.rect'); 
+
     T = loadTrack(trackPath);
     
     % do the spline interpolation
@@ -41,17 +36,14 @@ function spTrack = splineInterpolateTrack(trackFolder, robot, write)
 
     spTrack = [ts xs ys mw mh as];
     
-    if write
-        if robot
-            writePath = strcat(trackFolder, '\trajectories\robot.ups');
-        else
-            writePath = strcat(trackFolder, '\trajectories\followers.ups');
-        end
-        fileID = fopen(writePath,'w');
-        % save the transposed version to have the correct format in the
-        % file
-        fprintf(fileID,'%d %5f %5f %5f %5f %5f\r\n',spTrack.');
-        fclose(fileID);
-    end
+    % write the upsampled data
+    writePath = strcat(trackFolder, '\trajectories\', filename, '.ups');
+
+    fileID = fopen(writePath,'w');
+    % save the transposed version to have the correct format in the
+    % file
+    fprintf(fileID,'%d %5f %5f %5f %5f %5f\r\n',spTrack.');
+    fclose(fileID);
+
 
 end
