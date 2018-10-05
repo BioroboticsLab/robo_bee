@@ -1,18 +1,13 @@
 % this skript gets the name of a folder 
 % e.g. 'C:\Users\Franzi\Downloads\AnalysisOfDanceFollowing\trajectories\Folgeläufe am Roboter\capture (2011-09-10 at 14-04-09)_NG71follows_part1_'
-% this folder contains all information about the trajectory
-% rectified: bool -- want to plot the rectified track
-% splineInterpolated: bool -- want to plot the upsampled track
-% if splineInterpolated: rectified will be set on True because 
-% splineInterpolation works on rectified data
-% robot: bool -- want to track the robot (TRUE) or the follower (FALSE)
-function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot)        
+
+function drawTrajectoriesOnVideo(trackFolder)        
     if splineInterpolated
         rectified = 1;
     end 
     if rectified
         % get the track - .rbt load robot track, .flw follower track
-        trackPath = strcat(trackFolder, '\trajectories\robot.rect');
+        trackPath = strcat(trackFolder, '\trajectories\followers.rect');
         videoPath = strcat(trackFolder, '\video\rectified.avi');
         % the Transform matrix is needed to convert between world
         % coordinates and pixels
@@ -20,7 +15,7 @@ function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot
         transPath = strcat(trackFolder,'\video\Transform.mat');
         Trans = importdata(transPath);
         % retrieve values needed to conversion
-        [width, height, xStartPixel, yStartPixel] = initializeWordCoordsToPixel(v_in, Trans);
+        [width, height, xStartPixel, yStartPixel] = initializeWorldCoordsToPixel(v_in, Trans);
 
     else
         trackPath = strcat(trackFolder, '\trajectories\followers.raw');
@@ -30,7 +25,7 @@ function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot
     
     % is splineInterpolated: take the spline interpolated track
     if splineInterpolated
-        trackPath = strcat(trackFolder, '\trajectories\robot.ups');
+        trackPath = strcat(trackFolder, '\trajectories\followers.ups');
     end
     
     T = loadTrack(trackPath);
@@ -67,6 +62,8 @@ function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot
     % remember the x and y pixel to plot a line
     xOld = NaN;
     yOld = NaN;
+    % box is the rotated box to be drawn on the frame
+    box = gobjects(0);
     while hasFrame(v_in)
 
         pic = readFrame(v_in);
@@ -76,17 +73,21 @@ function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot
         if rectified
             pic = flipud(pic);
         end
-        
+       
         hIm.CData = pic;
-        
 
         % the frames for which no tracking exists are left as they were
         % the others need the point for where the robot was
         if frameIdx >= trackStart
-
+            
+            % clear the old box
+            delete(box);
+            
             % only if a value is found in the track
             % we draw a line between the old point and the new one
             if ~isnan(T(frameIdx-trackStart+1,2)) 
+                % verify that we get data from the correct index
+                % disp(T(frameIdx-trackStart+1,1));
                 
                 if rectified
                     % then convert by rule of three the mm from the track
@@ -108,6 +109,10 @@ function drawTrajectoryOnVideo(trackFolder, rectified, splineInterpolated, robot
                 % the plot has still the reversed y axis
                 % we therefore do plot v_in.Height - actual hight (flip)
                 plot(hAx, [xOld xPixel], [v_in.Height-yOld v_in.Height-yPixel], 'g');
+                
+                % plot the box around the objects
+                points = [xPixel v_in.Height-yPixel];
+                box = plot_RotatedRectangle(points, -T(frameIdx-trackStart+1,6),27,'r',10);
                 xOld = xPixel;
                 yOld = yPixel;
                 
@@ -136,7 +141,7 @@ end
 % udata: image width in pixel
 % vdata: image height in pixel
 % 
-function [width, height, xStartPixel, yStartPixel] = initializeWordCoordsToPixel(v_in, Trans)
+function [width, height, xStartPixel, yStartPixel] = initializeWorldCoordsToPixel(v_in, Trans)
     pic = readFrame(v_in); %reads the first frame
 
     udata = [1 640];  
