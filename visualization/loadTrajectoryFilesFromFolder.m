@@ -1,7 +1,11 @@
-function Params = loadTrajectoryFilesFromFolder(folder)
+% currently the file endings are
+% - '*.raw': raw data unprocessed
+% - '*.rect': rectified version
+% - '*.ups': upsampled by spline interpolation
+function Params = loadTrajectoryFilesFromFolder(folder, fileending)
 
 
-D = dir(fullfile(folder, '*.raw'));
+D = dir(fullfile(folder, fileending));
 
 k = 1;
 for i = 1:length(D)
