@@ -1,3 +1,6 @@
+% DEPRECATED: use the drawTrajectoriesOnVideo instead to have all tracks
+% displayed!
+
 % this skript gets the name of a folder 
 % e.g. 'C:\Users\Franzi\Downloads\AnalysisOfDanceFollowing\trajectories\Folgeläufe am Roboter\capture (2011-09-10 at 14-04-09)_NG71follows_part1_'
 
