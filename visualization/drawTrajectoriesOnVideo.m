@@ -37,13 +37,16 @@ if ~strcmp(UD.ending,'*.raw')
     UD.height = height;
     UD.xStartPixel = xStartPixel;
     UD.yStartPixel = yStartPixel;
+    
+    % iterate over the entire track to convert mm to pixel
+    UD = rectified_track_to_pixel(UD);
 end
 
 
 % line handles to remove path segments
 storage = java.util.PriorityQueue(5);% matlab.DiscreteEventSystem.queueFIFO('handle', 20);
 
-UD = rectified_track_to_pixel(UD);
+
 
 % initialize the start points of the lines for the trajectories
 % and the bounding boxes
@@ -93,7 +96,6 @@ for frameIdx = 1 : length(UD.idx)
             
             % TODO: do not hardcode 27x10 as box sizes; deal with flipped
             delete(UD.box{p})
-            %%%%%%%%%%%% TODO: RECTIFIED VERSION! angle
             UD.box{p} = plot_RotatedRectangle(linePoints(:,2)', -UD.T{p}(j{p},6),27,UD.colors(p),10);
             
             % update the roi to the current line in trajectory
@@ -156,13 +158,37 @@ function [width, height, xStartPixel, yStartPixel] = initializeWorldCoordsToPixe
     
 % given a raw angle, display the rectified version of it
 % UD: userdata contains all tracks
-% j: stores data from current frame index
+% j: row pf track
 % p: idx of track (if there are several tracks in UD.T
-function angle = convertAngleToRectified(UD, j, p)
-raw_angle = UD.T{p}(j{p}, 6)
-V   = [cos(raw_angle) sin(raw_angle)];
+% IMPORTANT: to be executed while track has still mm and no pixel
+function angle = convertAngleToRectified(UD, p,j)
+xpos1 = UD.T{p}(j, 2);
+ypos1 = UD.T{p}(j, 3);
 
-angle = 0;
+
+raw_angle = UD.T{p}(j, 6);
+
+% introduce a new point p2 that lies 10 mm away from this point
+xpos2 = xpos1 + 10*cos(-raw_angle); 
+ypos2 = ypos1 + 10*sin(-raw_angle);  
+
+
+% transform both points to pixel coordinates 
+xpixel1 = xpos1/ UD.width * UD.vidobj.Width - UD.xStartPixel;
+ypixel1 = ypos1/ UD.height * UD.vidobj.Height - UD.yStartPixel;
+xpixel2 = xpos2/ UD.width * UD.vidobj.Width - UD.xStartPixel;
+ypixel2 = ypos2/ UD.height * UD.vidobj.Height - UD.yStartPixel;
+
+% with the x and y diffs and the hypothenose (distance between points, we
+% can calculate the angle
+% tan(alpha) = gk / ak
+xdiff = abs(xpixel1 - xpixel2); 
+ydiff = abs(ypixel1 - ypixel2); 
+% we need to do minus because in the plot function we flip the angle
+% for raw video
+angle = -atan(ydiff/xdiff);
+
+
 
 % iterates over a rectified track and converts all mm-coordinates to pixel
 function UD = rectified_track_to_pixel(UD)
@@ -173,6 +199,8 @@ for i = 1:length(Tracks)
     
     % iterate over all rows in the track
     for j = 1:length(Tracks{i})
+        % calculate the angle 
+        Tracks{i}(j, 6) = convertAngleToRectified(UD, i,j); %i equals p, jth row
         % calculate the pixel
         xPixel = Tracks{i}(j, 2)/ UD.width * UD.vidobj.Width - UD.xStartPixel;
         yPixel = Tracks{i}(j, 3)/ UD.height * UD.vidobj.Height - UD.yStartPixel;
