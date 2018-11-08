@@ -4,7 +4,13 @@
 % - '*.ups': upsampled by spline interpolation
 function Params = loadTrajectoryFilesFromFolder(folder, fileending)
 
+% transformation matrix
+trans_path = strcat(folder,'\video\Transform.mat');
+Trans = importdata(trans_path);
+Params.Trans = Trans;
 
+% tracks
+folder = strcat(folder,'\trajectories');
 D = dir(fullfile(folder, fileending));
 
 k = 1;
@@ -18,5 +24,5 @@ for i = 1:length(D)
     % put these rows in Params.T
     Params.T{k} = T(idx_nnan, :);
     k = k + 1;
-    
+    Params.fileending = fileending;
 end
