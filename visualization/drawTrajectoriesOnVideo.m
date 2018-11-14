@@ -45,16 +45,10 @@ if ~strcmp(UD.ending,'*.raw')
     UD = rectified_track_to_pixel(UD);
 end
 
-
-% line handles to remove path segments
-%storage = %java.util.PriorityQueue(5);% matlab.DiscreteEventSystem.queueFIFO('handle', 20);
-
 % array to store the line handles
 line_length = 15;
 handle_array = [];
 handle_index = 1; % current index: if we have over line_length line segments, throw away this handle
-
-
 
 % initialize the start points of the lines for the trajectories
 % and the bounding boxes

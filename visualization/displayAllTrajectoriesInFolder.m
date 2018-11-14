@@ -14,5 +14,4 @@ end
 
 Params = loadTrajectoryFilesFromFolder(folder, fileending);
 Params.videoFilename    = videoPath;
-%displayTrajectoryOnVideo(Params)
 drawTrajectoriesOnVideo(Params)
