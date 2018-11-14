@@ -5,7 +5,8 @@ function [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params, id_dancer, id
 % Pr: path (trajectory) of robot: starting at the same time with follower;
 % fields are [xpos, ypos, angle] per row
 % Pf: same for follower
-% W: converted 
+% W: converted waggle indices -> starting at 1 and synchronized between
+% dancer and follower
 
 
 % check which trajectory starts first 
