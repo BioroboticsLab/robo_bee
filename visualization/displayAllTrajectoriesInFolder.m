@@ -7,6 +7,11 @@
 % C:\Users\Franzi\Downloads\Arbeitsergebnisse\tmp\robotic_dances\2011-09-03_16-39-39
 function displayAllTrajectoriesInFolder(folder, videoPath, fileending)
 
+if nargin < 2
+    videoPath = strcat(trackFolder, '\video\original.avi');
+    fileending = '*.raw';
+end
+
 Params = loadTrajectoryFilesFromFolder(folder, fileending);
 Params.videoFilename    = videoPath;
 %displayTrajectoryOnVideo(Params)
