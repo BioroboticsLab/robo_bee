@@ -34,12 +34,9 @@ UD.ending           = Params.fileending;
 if ~strcmp(UD.ending,'*.raw')
     UD.Trans = Params.Trans; %transformation matrix
     [width, height, xStartPixel, yStartPixel] = initializeWorldCoordsToPixel(UD);
-    UD.width = width;
-    disp(UD.width);
-   
+    UD.width = width;   
     UD.height = height;
-    
-    disp(UD.height);
+
     
     UD.xStartPixel = xStartPixel;
     UD.yStartPixel = yStartPixel;
@@ -50,7 +47,12 @@ end
 
 
 % line handles to remove path segments
-storage = java.util.PriorityQueue(5);% matlab.DiscreteEventSystem.queueFIFO('handle', 20);
+%storage = %java.util.PriorityQueue(5);% matlab.DiscreteEventSystem.queueFIFO('handle', 20);
+
+% array to store the line handles
+line_length = 15;
+handle_array = [];
+handle_index = 1; % current index: if we have over line_length line segments, throw away this handle
 
 
 
@@ -91,12 +93,13 @@ for frameIdx = 1 : length(UD.idx)
             % plot the lines following the trajectories
             linePoints = getLinePoints(UD, j, p);
             h = plot(hAx, linePoints(1,:), linePoints(2,:), UD.colors(p));
-            storage.add(h);
+            handle_array =  [handle_array, h];
             
-            % never show more than 5 line segments
-            if storage.size() >= 5
-                handle = storage.remove();
-                disp(handle);
+            
+            % never show more than 20 line segments
+            if length(handle_array) >= line_length
+                handle = handle_array(handle_index)
+                handle_index = handle_index + 1;
                 delete(handle);
             end
             
