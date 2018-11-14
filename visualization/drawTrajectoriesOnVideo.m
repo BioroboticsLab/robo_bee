@@ -3,6 +3,7 @@ function drawTrajectoriesOnVideo(Params)
 
 UD.vidobj           = VideoReader(Params.videoFilename);
 
+
 % varibales for visualization of video frames and trajectories
 hFig = figure('Name','trajectory',...
     'Units','pixels',...
@@ -18,7 +19,7 @@ hIm = image(uint8(zeros(UD.vidobj.Height,UD.vidobj.Width,1)),...
     'Parent',hAx);
 
 UD.i                = 1;            %current frame (relative, is index to idx)
-UD.T                = Params.T;     %trajectory
+UD.T                = Params.T;     %trajectories
 
 % Q holds all Trajectories, in order to find the indices in which data is
 % available
@@ -34,7 +35,12 @@ if ~strcmp(UD.ending,'*.raw')
     UD.Trans = Params.Trans; %transformation matrix
     [width, height, xStartPixel, yStartPixel] = initializeWorldCoordsToPixel(UD);
     UD.width = width;
+    disp(UD.width);
+   
     UD.height = height;
+    
+    disp(UD.height);
+    
     UD.xStartPixel = xStartPixel;
     UD.yStartPixel = yStartPixel;
     
@@ -85,16 +91,17 @@ for frameIdx = 1 : length(UD.idx)
             % plot the lines following the trajectories
             linePoints = getLinePoints(UD, j, p);
             h = plot(hAx, linePoints(1,:), linePoints(2,:), UD.colors(p));
-            %storage.add(h);
+            storage.add(h);
             
             % never show more than 5 line segments
-            %if storage.size() >= 5
-             %   handle = storage.remove();
-                %disp(handle);
-                %delete(handle);
-            %end
+            if storage.size() >= 5
+                handle = storage.remove();
+                disp(handle);
+                delete(handle);
+            end
             
             % TODO: do not hardcode 27x10 as box sizes; deal with flipped
+            % we flip the angle because y axis is flipped
             delete(UD.box{p})
             UD.box{p} = plot_RotatedRectangle(linePoints(:,2)', -UD.T{p}(j{p},6),27,UD.colors(p),10);
             
@@ -165,12 +172,14 @@ function angle = convertAngleToRectified(UD, p,j)
 xpos1 = UD.T{p}(j, 2);
 ypos1 = UD.T{p}(j, 3);
 
-
 raw_angle = UD.T{p}(j, 6);
 
 % introduce a new point p2 that lies 10 mm away from this point
-xpos2 = xpos1 + 10*cos(-raw_angle); 
-ypos2 = ypos1 + 10*sin(-raw_angle);  
+xpos2 = xpos1 + 10*cos(raw_angle); %gk
+ypos2 = ypos1 + 10*sin(raw_angle); %ak
+
+%distance = sqrt((xpos1-xpos2)^2 +(ypos1-ypos2)^2)
+%disp(distance); % --> must return 10 as a sanity check
 
 
 % transform both points to pixel coordinates 
@@ -184,9 +193,9 @@ ypixel2 = ypos2/ UD.height * UD.vidobj.Height - UD.yStartPixel;
 % tan(alpha) = gk / ak
 xdiff = abs(xpixel1 - xpixel2); 
 ydiff = abs(ypixel1 - ypixel2); 
-% we need to do minus because in the plot function we flip the angle
+
 % for raw video
-angle = -atan(ydiff/xdiff);
+angle = atan(xdiff/ydiff);
 
 
 
@@ -200,13 +209,14 @@ for i = 1:length(Tracks)
     % iterate over all rows in the track
     for j = 1:length(Tracks{i})
         % calculate the angle 
-        Tracks{i}(j, 6) = convertAngleToRectified(UD, i,j); %i equals p, jth row
+        %Tracks{i}(j, 6) = convertAngleToRectified(UD, i,j); %i equals p, jth row
         % calculate the pixel
         xPixel = Tracks{i}(j, 2)/ UD.width * UD.vidobj.Width - UD.xStartPixel;
         yPixel = Tracks{i}(j, 3)/ UD.height * UD.vidobj.Height - UD.yStartPixel;
         % and overwrite the milimeter data with pixel data
         Tracks{i}(j, 2) = xPixel;
         Tracks{i}(j, 3) = yPixel;
+        
     end
 
     UD.T = Tracks;
