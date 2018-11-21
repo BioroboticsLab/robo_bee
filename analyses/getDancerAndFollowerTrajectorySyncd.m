@@ -1,12 +1,15 @@
 % Params contains all trajectories 
-% id_dancer: id of where in the trajectories the robot lies
-% id_flw: id of where the follower lies
-function [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params, id_dancer, id_flw)
+function [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params)
 % Pr: path (trajectory) of robot: starting at the same time with follower;
 % fields are [xpos, ypos, angle] per row
 % Pf: same for follower
 % W: converted waggle indices -> starting at 1 and synchronized between
 % dancer and follower
+
+% id_dancer: id of where in the trajectories the robot lies
+% id_flw: id of where the follower lies
+id_dancer = Params.id_dancer
+id_flw = Params.id_flw
 
 
 % check which trajectory starts first 

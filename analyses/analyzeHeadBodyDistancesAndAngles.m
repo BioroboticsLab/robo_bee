@@ -4,7 +4,7 @@ function analyzeHeadBodyDistancesAndAngles( folder )
 
 Params = loadTrajectoryFilesFromFolder(folder, '*.ups');
 
-[Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params, Params.id_dancer, Params.id_flw);
+[Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params);
 getMeanDistanceAndAngle_WaggleReturnSeperated(Pr, Pf, W, Params.framerate)
 
 end
