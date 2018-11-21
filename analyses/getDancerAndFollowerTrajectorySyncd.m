@@ -21,7 +21,7 @@ if Params.T{id_dancer}(1,1) <= Params.T{id_flw}(1,1)  % dancer starts first
     % Pf = [ 5*Params.Trs{id_flw}(:, 2:3)/Params.space_norm Params.Trs{id_flw}(:, 6) ]; 
 
     Pr = [ Params.T{id_dancer}(i_start_dancer : end, 2:3) Params.T{id_dancer}(i_start_dancer : end, 6) ];
-    Pf = [ Params.Trs{id_flw}(:, 2:3) Params.Trs{id_flw}(:, 6) ]; 
+    Pf = [ Params.T{id_flw}(:, 2:3) Params.T{id_flw}(:, 6) ]; 
 
     
     % convert the waggle indices into the synchronised index system
@@ -43,7 +43,7 @@ else % follower starts first
     % Pf = [ 5*Params.Trs{id_flw}(i_start_flw : end, 2:3)/Params.space_norm Params.Trs{id_flw}(i_start_flw : end, 6) ]; 
 
     Pr = [ Params.T{id_dancer}(:, 2:3) Params.T{id_dancer}(:, 6) ];
-    Pf = [ Params.Trs{id_flw}(i_start_flw : end, 2:3) Params.Trs{id_flw}(i_start_flw : end, 6) ]; 
+    Pf = [ Params.T{id_flw}(i_start_flw : end, 2:3) Params.T{id_flw}(i_start_flw : end, 6) ]; 
 
     W = round(Params.I / 10);
 end
