@@ -28,7 +28,6 @@ function rectifyVideo(trackFolder)
                                                     'vdata',vdata,...
                                                     'size',size(pic),...
                                                     'fill',128);
-
         
         writeVideo(v_out, B);
     end

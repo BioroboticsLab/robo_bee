@@ -90,5 +90,6 @@ for i = 2 : length(W)
        
 end
 
-fprintf('Total # sequences collected: %d\n', size(C1, 1))
+seq_size = size(waggle_distances, 1)+size(return_distances, 1);
+fprintf('Total # sequences collected: %d\n', seq_size)
 
