@@ -4,6 +4,7 @@
 % W: converted waggle indices -> starting at 1 and synchronized between
 % dancer and follower
 % framerate: as given in the video
+% this function consideres the waggle and the return run seperately
 function [waggle_distances, waggle_angles, return_distances,return_angles] = getMeanDistanceAndAngle_WaggleReturnSeperated(Pr, Pf, W, framerate)
 % waggle_distances: distances between head/body for waggle, but scaled to 40
 % waggle_angles: angles between bees for waggle, but scaled to 40
@@ -67,24 +68,24 @@ for i = 2 : length(W)
     
     % resample data
     % scale waggle to 40 
-    Q = resample( q_waggle, resample_waggle, length(q_waggle));
+    Q = resample_around_mean( q_waggle, resample_waggle);
     Q = mean(q_waggle)*Q/mean(Q);
     waggle_distances = [waggle_distances; Q];
     
     % angles between flw/robot from start of last to start of current waggle
     q = a(start_waggle : stop_waggle);
-    Q = resample( q, resample_waggle, length(q));
+    Q = resample_around_mean( q, resample_waggle);
     Q = mean(q)*Q/mean(Q);
     waggle_angles = [waggle_angles; Q];
     
     % and scale return run to 160 (sum of both is 200)
-    Q = resample( q_return, resample_return, length(q_return));
+    Q = resample_around_mean( q_return, resample_return);
     Q = mean(q_return)*Q/mean(Q);
     return_distances = [return_distances; Q];
     
     % angles between flw/robot from start of last to start of current waggle
     q = a(start_return : stop_return);
-    Q = resample( q, resample_return, length(q));
+    Q = resample_around_mean( q, resample_return);
     Q = mean(q)*Q/mean(Q);
     return_angles = [return_angles; Q];
        
@@ -92,4 +93,3 @@ end
 
 seq_size = size(waggle_distances, 1)+size(return_distances, 1);
 fprintf('Total # sequences collected: %d\n', seq_size)
-
