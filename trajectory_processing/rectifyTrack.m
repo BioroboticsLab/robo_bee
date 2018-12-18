@@ -8,7 +8,6 @@ function rectTrack = rectifyTrack(trackFolder, filename)
     hPath = strcat(trackFolder, '\video\H.mat');
     disp(hPath);
     H = importdata(hPath);
-    disp('done');
 
     % get the raw track
     trackPath = strcat(trackFolder, '\trajectories\', filename, '.raw');
