@@ -11,6 +11,7 @@ end
 
 % transformation matrix
 trans_path = strcat(folder,'\video\Transform.mat');
+disp(trans_path);
 % for the matrix with the waggle indices
 i_path = strcat(folder,'\video\I.mat');
 Trans = importdata(trans_path);
