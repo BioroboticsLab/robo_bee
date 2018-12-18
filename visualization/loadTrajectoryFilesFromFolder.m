@@ -38,7 +38,7 @@ for i = 1:length(D)
         Params.id_dancer = i;
     end
     
-    T          = loadTrack([folder '\' D(i).name]);
+    space_norm, T          = loadTrack([folder '\' D(i).name]);
 
     % find the row numbers that have valid data (not NaNs)
     idx_nnan    = find(isnan(T(:,2)) == 0);
@@ -48,7 +48,7 @@ for i = 1:length(D)
     k = k + 1;
     Params.fileending = fileending;
     
-    Params.space_norm = 5; % HACK: 5 / 5 is 1 --> for robotic dances
+    Params.space_norm = space_norm; 
      
 %     this is an example of how we saved the I's to the folders
 %     I = [   232 250
