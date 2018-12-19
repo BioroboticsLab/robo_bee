@@ -9,25 +9,41 @@ isub = [d(:).isdir]; %# returns logical vector
 nameFolds = {d(isub).name}';
 nameFolds(ismember(nameFolds,{'.','..','_'})) = [];
 
-for n = 1 : length(nameFolds)
 
+for n = 1 : length(nameFolds)
+    
+    % all folders that end with _ should be excluded,
+    % they are missing values like I matrix or H matrix
+      if nameFolds{n}(end) == '_'
+          disp(nameFolds(n));
+          continue
+      end
+  
+   
+    
+    % process the individual folder
     currentFolder = strcat(roboDancePath, nameFolds{n});
-    currentTrackFolder = strcat(currentFolder, '\trajectories\');
-    currentVideoFolder = strcat(currentFolder, '\video\');
     
-    % find the raw data to be rectified and spline interpolated
-    fileList = dir(fullfile(currentTrackFolder, '*.raw'));
-    fileListNames = {fileList(:).name}';
+    % load all parameters from that folder. T contains the tracks.
+    Params = loadTrajectoryFilesFromFolder(currentFolder, '*.raw');
     
-    for file = 1 : length(fileListNames)
-        currentFile = strcat(currentTrackFolder, fileListNames{file});
-        [pathstr,name,ext] = fileparts(currentFile);
+    % iterate over all trajectories
+    for i = 1 : length(Params.T)
         
-        % rectify the track
-        rectifyTrack(currentFolder, name); 
         
-        % spline interpolate the track
-        splineInterpolateTrack(currentFolder, name); 
+        % rectification
+        rectPath = strcat(currentFolder, '\trajectories\', Params.filenames{i}, '.rect');
+        rectifiedTrack = rectifyTrack(Params, i);
+        % save the rectified track in Params
+        Params.Tr{i} = rectifiedTrack;
+        saveTrack(rectifiedTrack, rectPath, Params.headers{i})
+        
+        % interpolation and upsampling
+        splinePath = strcat(currentFolder,'\trajectories\',Params.filenames{i}, '.ups');
+        splineInterpolatedTrack = splineInterpolateTrack(Params, i);
+        saveTrack(splineInterpolatedTrack, splinePath, Params.headers{i})
         
     end 
+    
+
 end

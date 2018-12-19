@@ -2,17 +2,10 @@
 % e.g. 'C:\Users\Franzi\Downloads\AnalysisOfDanceFollowing\trajectories\Folgeläufe am Roboter\capture (2011-09-10 at 14-04-09)_NG71follows_part1_'
 % this folder contains all information about the trajectory 
 % filename: string -- the name of the output file eg. 'follower'
-function rectTrack = rectifyTrack(trackFolder, filename)
+function rectTrack = rectifyTrack(Params, i)
 
-    % load H homography
-    hPath = strcat(trackFolder, '\video\H.mat');
-    disp(hPath);
-    H = importdata(hPath);
-
-    % get the raw track
-    trackPath = strcat(trackFolder, '\trajectories\', filename, '.raw');
-    [~, T] = loadTrack(trackPath);
-    disp(T(1,:));
+    T = Params.T{i};
+    H = Params.H;
 
     % functionality to rectify trajectory
     idx = T(:,1);
@@ -36,8 +29,4 @@ function rectTrack = rectifyTrack(trackFolder, filename)
     % make the old format and store to Trect
     rectTrack = [idx HP' T(:,4:5).*max(e)/2 atan2(V2(2,:), V2(1,:))'];
 
-
-    writePath = strcat(trackFolder, '\trajectories\', filename, '.rect');
-    
-    saveTrack(rectTrack.', writePath);
 end
