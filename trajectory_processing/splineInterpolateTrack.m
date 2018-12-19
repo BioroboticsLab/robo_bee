@@ -1,11 +1,8 @@
 % splineInterpolation works ONLY on rectified tracks
 % filename: string -- the name of the output file eg. 'follower'
-function spTrack = splineInterpolateTrack(trackFolder, filename)
+function spTrack = splineInterpolateTrack(Params, i)
 
-    % load the rectified to be spline interpolated
-    trackPath = strcat(trackFolder, '\trajectories\', filename, '.rect'); 
-
-    [~, T] = loadTrack(trackPath);
+    T = Params.Tr{i};
     
     % do the spline interpolation
     n       = length(T);
@@ -36,10 +33,5 @@ function spTrack = splineInterpolateTrack(trackFolder, filename)
     mh      = repmat(nanmean(T(:,5)), length(ts), 1); %mean height
 
     spTrack = [ts xs ys mw mh as];
-    
-    % write the upsampled data
-    writePath = strcat(trackFolder, '\trajectories\', filename, '.ups');
-
-    saveTrack(spTrack.', writePath);
     
 end
