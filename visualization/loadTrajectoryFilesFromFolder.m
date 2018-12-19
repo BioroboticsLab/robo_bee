@@ -38,7 +38,7 @@ for i = 1:length(D)
         Params.id_dancer = i;
     end
     
-    space_norm, T          = loadTrack([folder '\' D(i).name]);
+    [space_norm, T]          = loadTrack([folder '\' D(i).name]);
 
     % find the row numbers that have valid data (not NaNs)
     idx_nnan    = find(isnan(T(:,2)) == 0);

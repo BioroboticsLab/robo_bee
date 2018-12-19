@@ -11,7 +11,8 @@ function rectTrack = rectifyTrack(trackFolder, filename)
 
     % get the raw track
     trackPath = strcat(trackFolder, '\trajectories\', filename, '.raw');
-    T = loadTrack(trackPath);
+    [~, T] = loadTrack(trackPath);
+    disp(T(1,:));
 
     % functionality to rectify trajectory
     idx = T(:,1);
@@ -37,8 +38,6 @@ function rectTrack = rectifyTrack(trackFolder, filename)
 
 
     writePath = strcat(trackFolder, '\trajectories\', filename, '.rect');
-    fileID = fopen(writePath,'w');
-    fprintf(fileID,'%d %5f %5f %5f %5f %5f\r\n',rectTrack.');
-    fclose(fileID);
-
+    
+    saveTrack(rectTrack.', writePath);
 end

@@ -5,7 +5,7 @@ function spTrack = splineInterpolateTrack(trackFolder, filename)
     % load the rectified to be spline interpolated
     trackPath = strcat(trackFolder, '\trajectories\', filename, '.rect'); 
 
-    T = loadTrack(trackPath);
+    [~, T] = loadTrack(trackPath);
     
     % do the spline interpolation
     n       = length(T);
@@ -18,7 +18,8 @@ function spTrack = splineInterpolateTrack(trackFolder, filename)
 
     % integer steps from first to last position (original data typically has
     % gaps pf ~ 10 frames)
-    ts      = (T(1,1) : T(end,1))'; 
+    % 0.5 steps to upsample from 50 to 100 Hz (only robot)
+    ts      = (T(1,1) : .5 :  T(end,1))'; 
 
     csx     = csaps(t, x);
     csy     = csaps(t, y);
@@ -39,11 +40,6 @@ function spTrack = splineInterpolateTrack(trackFolder, filename)
     % write the upsampled data
     writePath = strcat(trackFolder, '\trajectories\', filename, '.ups');
 
-    fileID = fopen(writePath,'w');
-    % save the transposed version to have the correct format in the
-    % file
-    fprintf(fileID,'%d %5f %5f %5f %5f %5f\r\n',spTrack.');
-    fclose(fileID);
-
-
+    saveTrack(spTrack.', writePath);
+    
 end
