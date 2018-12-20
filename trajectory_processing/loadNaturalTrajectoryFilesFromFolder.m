@@ -3,12 +3,10 @@
 % - '*.raw': raw data unprocessed
 % - '*.rect': rectified version
 % - '*.ups': upsampled by spline interpolation
-function Params = loadNaturalTrajectoryFilesFromFolder(folder, fileending)
+function Params = loadNaturalTrajectoryFilesFromFolder(folder)
 
-% default we assume raw files
-if nargin < 2
-    fileending = '*.raw';
-end
+% we load the raw files, variable used to load the trajectories
+fileending = '*.raw';
 
 % save the data type
 Params.fileending = fileending;

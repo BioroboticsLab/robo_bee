@@ -2,13 +2,11 @@
 % currently the file endings are
 % - '*.raw': raw data unprocessed
 % - '*.rect': rectified version
-% - '*.ups': upsampled by spline interpolation
-function Params = loadRobotTrajectoryFilesFromFolder(folder, fileending)
+% - '*.ups': upsampled and spline interpolation
+function Params = loadRobotTrajectoryFilesFromFolder(folder)
 
-% default we assume raw files
-if nargin < 2
-    fileending = '*.raw';
-end
+% we load the raw files, variable used to load the trajectories
+fileending = '*.raw';
 
 % load transformation matrix
 trans_path = strcat(folder,'\video\Transform.mat');

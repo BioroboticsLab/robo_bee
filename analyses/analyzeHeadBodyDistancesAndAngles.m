@@ -24,9 +24,9 @@ for i = 1:length(D)
     
     subfolder = strcat(folder, D(i).name);
     if isRobotic
-        Params = loadRobotTrajectoryFilesFromFolder(subfolder, '*.ups');
+        Params = loadRobotTrajectoryFilesFromFolder(subfolder);
     else
-        Params = loadNaturalTrajectoryFilesFromFolder(subfolder, '*.ups');
+        Params = loadNaturalTrajectoryFilesFromFolder(subfolder);
     end
 
     [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params);
