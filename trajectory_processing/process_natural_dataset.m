@@ -10,23 +10,39 @@ nameFolds = {d(isub).name}';
 nameFolds(ismember(nameFolds,{'.','..','_'})) = [];
 
 for n = 1 : length(nameFolds)
-
-    currentFolder = strcat(roboDancePath, nameFolds{n});
-    currentTrackFolder = strcat(currentFolder, '\trajectories\');
     
-    % find the raw data to be rectified and spline interpolated
-    fileList = dir(fullfile(currentTrackFolder, '*.raw'));
-    fileListNames = {fileList(:).name}';
+    % all folders that end with _ should be excluded,
+    % they are missing values like I matrix or H matrix
+      if nameFolds{n}(end) == '_'
+          continue
+      end
+  
+   
     
-    for file = 1 : length(fileListNames)
-        currentFile = strcat(currentTrackFolder, fileListNames{file});
-        [pathstr,name,ext] = fileparts(currentFile);
+    % process the individual folder
+    currentFolder = strcat(naturalDancePath, nameFolds{n});
+    
+    % load all parameters from that folder. T contains the tracks.
+    Params = loadNaturalTrajectoryFilesFromFolder(currentFolder, '*.raw');
+    
+    % iterate over all trajectories
+    for i = 1 : length(Params.T)
         
-        % rectify the track
-        rescaleNaturalDance(currentFolder, name); 
         
-        % spline interpolate the track
-        splineInterpolateTrack(currentFolder, name); 
+        % rectification
+        rescaledPath = strcat(currentFolder, '\trajectories\', Params.filenames{i}, '.rect');
+        rescaledTrack = Params.Tr{i};
+        saveTrack(rescaledTrack, rescaledPath, Params.headers{i})
+        
+        % actually not needed, but to be consistend with robot dataset
+        % save the rescaled version with extention .ups 
+        % Params.Tr{i} = Params.Ts{i} (see
+        % loadNaturalTrajectoryFilesFromFolder.m)
+        splinePath = strcat(currentFolder,'\trajectories\',Params.filenames{i}, '.ups');
+        splineInterpolatedTrack = Params.Ts{i};
+        saveTrack(splineInterpolatedTrack, splinePath, Params.headers{i})
         
     end 
+    
+
 end

@@ -10,6 +10,13 @@ if nargin < 2
     fileending = '*.raw';
 end
 
+% save the data type
+Params.fileending = fileending;
+%framerate
+Params.framerate = 100; % for all natural dances, framerate is 100
+     
+
+
 % load waggle index matrix
 i_path = strcat(folder,'\video\I.csv');
 I = csvread(i_path);
@@ -39,17 +46,19 @@ for i = 1:length(D)
     if isempty(indices)
         space_norm = 39; %default value
     else
-        k1 = k(indices);
+        k1 = indices(1);
         kvalue = k1 +11; % index of where the value for space_norm starts
+        % space_norm has 10 letters, then =, then starts the value
         space_norm = header(kvalue : kvalue +1); % two numbers for the space_norm    
     end
-    Params.space_norm = space_norm; 
+    Params.space_norm = str2num(space_norm); 
     
     % natural dances do not need rectification, only rescaling
-    % they also have data at each point, thus the scaled version is also
-    % already the upsampled one
     Params.Tr{i} = rescaleNaturalDance(Params, i);
-    Params.Ts{i} = Params.Tr{i};
+    % for the dancer, data exists at every point, thus the spline
+    % interpolated result is the same as before, the followers need
+    % interpolation
+    Params.Ts{i} = splineInterpolateTrack(Params, i);
     
     % save the header line from that file
     Params.headers{i} = header;
@@ -59,11 +68,5 @@ for i = 1:length(D)
 
 end
   
-    % save the data type
-    Params.fileending = fileending;
-    %framerate
-    Params.framerate = 100; % for all natural dances, framerate is 100
-     
-
    
 end

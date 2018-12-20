@@ -16,7 +16,9 @@ function spTrack = splineInterpolateTrack(Params, i)
     % integer steps from first to last position (original data typically has
     % gaps pf ~ 10 frames)
     % 0.5 steps to upsample from 50 to 100 Hz (only robot)
-    ts      = (T(1,1) : .5 :  T(end,1))'; 
+    % natural dances will go with stepsize 1 100/100
+    steps = Params.framerate / 100;
+    ts      = (T(1,1) : steps :  T(end,1))'; 
 
     csx     = csaps(t, x);
     csy     = csaps(t, y);
