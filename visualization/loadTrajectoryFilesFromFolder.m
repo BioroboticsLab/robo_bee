@@ -47,6 +47,10 @@ for i = 1:length(D)
     idx_nnan    = find(isnan(T(:,2)) == 0);
     Params.T{i} = T(idx_nnan, :); 
     
+    % also calculate the rectified und spline interpolated track
+    Params.Tr{i} = rectifyTrack(Params, i);
+    Params.Ts{i} = splineInterpolateTrack(Params, i);
+    
     % save the header line from that file
     Params.headers{i} = header;
     % the file name stripped off from the file extension
