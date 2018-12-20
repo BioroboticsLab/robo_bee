@@ -24,7 +24,7 @@ for n = 1 : length(nameFolds)
     currentFolder = strcat(roboDancePath, nameFolds{n});
     
     % load all parameters from that folder. T contains the tracks.
-    Params = loadTrajectoryFilesFromFolder(currentFolder, '*.raw');
+    Params = loadRobotTrajectoryFilesFromFolder(currentFolder, '*.raw');
     
     % iterate over all trajectories
     for i = 1 : length(Params.T)
@@ -32,14 +32,12 @@ for n = 1 : length(nameFolds)
         
         % rectification
         rectPath = strcat(currentFolder, '\trajectories\', Params.filenames{i}, '.rect');
-        rectifiedTrack = rectifyTrack(Params, i);
-        % save the rectified track in Params
-        Params.Tr{i} = rectifiedTrack;
+        rectifiedTrack = Params.Tr{i};
         saveTrack(rectifiedTrack, rectPath, Params.headers{i})
         
         % interpolation and upsampling
         splinePath = strcat(currentFolder,'\trajectories\',Params.filenames{i}, '.ups');
-        splineInterpolatedTrack = splineInterpolateTrack(Params, i);
+        splineInterpolatedTrack = Params.Ts{i};
         saveTrack(splineInterpolatedTrack, splinePath, Params.headers{i})
         
     end 
