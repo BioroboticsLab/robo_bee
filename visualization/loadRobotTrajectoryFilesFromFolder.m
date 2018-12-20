@@ -3,7 +3,7 @@
 % - '*.raw': raw data unprocessed
 % - '*.rect': rectified version
 % - '*.ups': upsampled by spline interpolation
-function Params = loadTrajectoryFilesFromFolder(folder, fileending)
+function Params = loadRobotTrajectoryFilesFromFolder(folder, fileending)
 
 % default we assume raw files
 if nargin < 2
