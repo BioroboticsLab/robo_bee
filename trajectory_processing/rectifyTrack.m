@@ -26,7 +26,7 @@ function rectTrack = rectifyTrack(Params, i)
     V2  = HQ - HP;
     % eigenvectors of H for scaling the box dimensions
     e = eig(H);
-    % make the old format and store to Trect
+    
     rectTrack = [idx HP' T(:,4:5).*max(e)/2 atan2(V2(2,:), V2(1,:))'];
 
 end

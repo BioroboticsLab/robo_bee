@@ -15,7 +15,6 @@ for n = 1 : length(nameFolds)
     % all folders that end with _ should be excluded,
     % they are missing values like I matrix or H matrix
       if nameFolds{n}(end) == '_'
-          disp(nameFolds(n));
           continue
       end
   
