@@ -1,12 +1,11 @@
 % this skript gets the name of a folder 
 % which contains all information about ONE trajectory 
 % filename: string -- the name of the output file eg. 'follower'
-function rescaledTrack = rescaleNaturalDance( trackFolder, filename )
+function rescaledTrack = rescaleNaturalDance(Params, i)
 % it rescales the trajectory according to the space norm
 
-% get the raw track
-trackPath = strcat(trackFolder, '\trajectories\', filename, '.raw');
-space_norm, T = loadTrack(trackPath);
+    T = Params.T{i};
+    space_norm = Params.space_norm;
 
     % extract 
     X = T(:,2);
@@ -19,10 +18,5 @@ space_norm, T = loadTrack(trackPath);
     Y = Y*5/space_norm;
     rescaledTrack = [T(:,1) X Y T(:,4) T(:,5) T(:,6)];
 
-
-    writePath = strcat(trackFolder, '\trajectories\', filename, '.rect');
-    fileID = fopen(writePath,'w');
-    fprintf(fileID,'%d %5f %5f %5f %5f %5f\r\n',rescaledTrack.');
-    fclose(fileID);
 end
 
