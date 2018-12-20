@@ -68,24 +68,24 @@ for i = 2 : length(W)
     
     % resample data
     % scale waggle to 40 
-    Q = resample_around_mean( q_waggle, resample_waggle);
+    Q = resampleZeroPaddingResistant( q_waggle, resample_waggle);
     Q = mean(q_waggle)*Q/mean(Q);
     waggle_distances = [waggle_distances; Q];
     
     % angles between flw/robot from start of last to start of current waggle
     q = a(start_waggle : stop_waggle);
-    Q = resample_around_mean( q, resample_waggle);
+    Q = resampleZeroPaddingResistant( q, resample_waggle);
     Q = mean(q)*Q/mean(Q);
     waggle_angles = [waggle_angles; Q];
     
     % and scale return run to 160 (sum of both is 200)
-    Q = resample_around_mean( q_return, resample_return);
+    Q = resampleZeroPaddingResistant( q_return, resample_return);
     Q = mean(q_return)*Q/mean(Q);
     return_distances = [return_distances; Q];
     
     % angles between flw/robot from start of last to start of current waggle
     q = a(start_return : stop_return);
-    Q = resample_around_mean( q, resample_return);
+    Q = resampleZeroPaddingResistant( q, resample_return);
     Q = mean(q)*Q/mean(Q);
     return_angles = [return_angles; Q];
        
