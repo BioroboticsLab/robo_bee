@@ -1,6 +1,8 @@
 % folder: leads to the upper folder of trajectories and video
-% e.g. C:\Users\Franzi\Downloads\Arbeitsergebnisse\tmp\robotic_dances\
-function analyzeHeadBodyDistancesAndAngles( folder )
+%   e.g. C:\Users\Franzi\Downloads\Arbeitsergebnisse\tmp\robotic_dances\
+% isRobotic is 1, if we are working on the robot dance dataset and 0 if we
+%   work on the natural dances
+function analyzeHeadBodyDistancesAndAngles( folder , isRobotic)
 % analyzes the head body distances and angles of bees and followers
 
 % list all subdirectories
@@ -21,7 +23,11 @@ for i = 1:length(D)
     end
     
     subfolder = strcat(folder, D(i).name);
-    Params = loadTrajectoryFilesFromFolder(subfolder, '*.ups');
+    if isRobotic
+        Params = loadRobotTrajectoryFilesFromFolder(subfolder, '*.ups');
+    else
+        Params = loadNaturalTrajectoryFilesFromFolder(subfolder, '*.ups');
+    end
 
     [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params);
     getMeanDistanceAndAngle_WaggleReturnSeperated(Pr, Pf, W, Params.framerate)
