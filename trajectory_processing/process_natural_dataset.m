@@ -23,7 +23,7 @@ for n = 1 : length(nameFolds)
     currentFolder = strcat(naturalDancePath, nameFolds{n});
     
     % load all parameters from that folder. T contains the tracks.
-    Params = loadNaturalTrajectoryFilesFromFolder(currentFolder, '*.raw');
+    Params = loadNaturalTrajectoryFilesFromFolder(currentFolder);
     
     % iterate over all trajectories
     for i = 1 : length(Params.T)

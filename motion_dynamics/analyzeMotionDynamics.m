@@ -21,7 +21,7 @@ for i = 1:length(D)
     end
     
     subfolder = strcat(folder, D(i).name);
-    Params = loadTrajectoryFilesFromFolder(subfolder, '*.ups');
+    Params = loadRobotTrajectoryFilesFromFolder(subfolder);
     
     [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params);
 
@@ -34,25 +34,20 @@ for i = 1:length(D)
     [wfv, wsv, wan, rfv, rsv, ran] = getMeanVelocitiesAndAngles_Seperated(Pr, Pf, W, Params.framerate);
 
 
-%write it out
-wfv_name = strcat(subfolder,'_wfv.csv');
-wsv_name = strcat(subfolder,'_wsv.csv');
-wan_name = strcat(subfolder,'_wan.csv');
-rfv_name = strcat(subfolder,'_rfv.csv');
-rsv_name = strcat(subfolder,'_rsv.csv');
-ran_name = strcat(subfolder,'_ran.csv');
+    %write it out
+    wfv_name = strcat(subfolder,'_wfv.csv');
+    wsv_name = strcat(subfolder,'_wsv.csv');
+    wan_name = strcat(subfolder,'_wan.csv');
+    rfv_name = strcat(subfolder,'_rfv.csv');
+    rsv_name = strcat(subfolder,'_rsv.csv');
+    ran_name = strcat(subfolder,'_ran.csv');
 
-csvwrite(wfv_name,wfv);
-csvwrite(wsv_name,wsv);
-csvwrite(wan_name,wan);
-csvwrite(rfv_name,rfv);
-csvwrite(rsv_name,rsv);
-csvwrite(ran_name,ran);
-
-
-
+    csvwrite(wfv_name,wfv);
+    csvwrite(wsv_name,wsv);
+    csvwrite(wan_name,wan);
+    csvwrite(rfv_name,rfv);
+    csvwrite(rsv_name,rsv);
+    csvwrite(ran_name,ran);
 end
-
-
 end
 
