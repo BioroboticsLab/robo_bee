@@ -58,11 +58,14 @@ for i = 2 : size(W,1)-1
     %   stop    = W(i+1, 1) - 1;
     
     % if waggle starts after data, skip this waggle
-    if ~(stop < length(dx))
+    if ~(stop_return < length(dx))
         fprintf('Sequence #%d (%d : %d) out of global data bounds. Continuing.\n', i - 1, W(i-1, 1), W(i+1, 1))
         continue
     end
     
+    % do not use them double --> do not start with left
+    disp(W(i-1, 2));
+    disp(W(i-1, 2)+ 250);
     if sum(da(W(i-1, 2) : W(i-1, 2) + 250)) < 0
         fprintf('left turn? %d\n', i)
         continue
@@ -70,29 +73,29 @@ for i = 2 : size(W,1)-1
     
     % forward velocities
     q       = v_forw( start_waggle : stop_waggle );
-    Q       = resample_around_mean(q, resample_waggle1);
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_fv  = [waggle_fv; Q'];
     
     q       = v_forw( start_return : stop_return );
-    Q       = resample_around_mean(q, resample_return1);
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_fv  = [return_fv; Q'];
     
     % sideward velocities 
     q       = v_side( start_waggle : stop_waggle );
-    Q       = resample_around_mean(q, resample_waggle1);
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_sv  = [waggle_sv; Q'];
     
     q       = v_side( start_return : stop_return );
-    Q       = resample_around_mean(q, resample_return1);
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_sv  = [return_sv; Q'];
     
     % angles
     q       = da( start_waggle : stop_waggle );
-    Q       = resample_around_mean(q, resample_waggle1);
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_ang  = [waggle_ang; Q'];
     
     q       = da( start_return : stop_return );
-    Q       = resample_around_mean(q, resample_return1);
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_ang  = [return_ang; Q'];
     
     
@@ -113,8 +116,3 @@ for i = 2 : size(W,1)-1
 %     DVY = [DVY; Q'];
     
 end
-
-
-
-seq_size = size(waggle_distances, 1)+size(return_distances, 1);
-fprintf('Total # sequences collected: %d\n', seq_size)

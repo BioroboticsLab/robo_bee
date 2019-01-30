@@ -1,8 +1,9 @@
 % folder: leads to the upper folder of trajectories and video
 %   e.g. C:\Users\Franzi\Downloads\Arbeitsergebnisse\tmp\robotic_dances\
-% isRobotic is 1, if we are working on the robot dance dataset and 0 if we
+% isRobotic (bool) is 1, if we are working on the robot dance dataset and 0 if we
 %   work on the natural dances
-function analyzeHeadBodyDistancesAndAngles( folder , isRobotic)
+% writeFiles (bool) 1: write the data to files (for plotting with python)
+function analyzeHeadBodyDistancesAndAngles( folder , isRobotic, writeFiles)
 % analyzes the head body distances and angles of bees and followers
 
 % list all subdirectories
@@ -17,7 +18,7 @@ for i = 1:length(D)
     
     if strcmp(D(i).name, '.') || strcmp(D(i).name, '..') || strcmp(D(i).name(end), '_')
         % the directories '.' and '..' won't be used as well as directories
-        % starting with an underscore (they do not have all data necessary)
+        % ending with an underscore (they do not have all data necessary)
         
         continue
     end
@@ -30,7 +31,35 @@ for i = 1:length(D)
     end
 
     [Pr, Pf, W] = getDancerAndFollowerTrajectorySyncd(Params);
-    getMeanDistanceAndAngle_WaggleReturnSeperated(Pr, Pf, W, Params.framerate)
+    [wd, wa, rd, ra] = getMeanDistanceAndAngle_WaggleReturnSeperated(Pr, Pf, W, Params.framerate);
+    
+
+
+    %write it out to a subfolder in your folder 
+    % underscode needed in the load trajectory function (it ignores folders
+    % with underscore)
+%     sf = 'hbd_and_angles_\';
+%     
+%     if writeFiles
+%         wd_name = strcat(folder,sf, D(i).name,'_wd.csv');
+%         wa_name = strcat(folder,sf, D(i).name,'_wa.csv');
+%         rd_name = strcat(folder,sf, D(i).name,'_rd.csv');
+%         ra_name = strcat(folder,sf, D(i).name,'_ra.csv');
+% 
+%         csvwrite(wd_name,wd);
+%         csvwrite(wa_name,wa);
+%         csvwrite(rd_name,rd);
+%         csvwrite(ra_name,ra);
+%     end
+    wd_name = strcat(subfolder,'_wd.csv');
+    wa_name = strcat(subfolder,'_wa.csv');
+    rd_name = strcat(subfolder,'_rd.csv');
+    ra_name = strcat(subfolder,'_ra.csv');
+    csvwrite(wd_name,wd);
+    csvwrite(wa_name,wa);
+    csvwrite(rd_name,rd);
+    csvwrite(ra_name,ra);
+
 end
 
 
