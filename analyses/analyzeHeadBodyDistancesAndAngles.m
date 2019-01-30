@@ -38,27 +38,20 @@ for i = 1:length(D)
     %write it out to a subfolder in your folder 
     % underscode needed in the load trajectory function (it ignores folders
     % with underscore)
-%     sf = 'hbd_and_angles_\';
-%     
-%     if writeFiles
-%         wd_name = strcat(folder,sf, D(i).name,'_wd.csv');
-%         wa_name = strcat(folder,sf, D(i).name,'_wa.csv');
-%         rd_name = strcat(folder,sf, D(i).name,'_rd.csv');
-%         ra_name = strcat(folder,sf, D(i).name,'_ra.csv');
-% 
-%         csvwrite(wd_name,wd);
-%         csvwrite(wa_name,wa);
-%         csvwrite(rd_name,rd);
-%         csvwrite(ra_name,ra);
-%     end
-    wd_name = strcat(subfolder,'_wd.csv');
-    wa_name = strcat(subfolder,'_wa.csv');
-    rd_name = strcat(subfolder,'_rd.csv');
-    ra_name = strcat(subfolder,'_ra.csv');
-    csvwrite(wd_name,wd);
-    csvwrite(wa_name,wa);
-    csvwrite(rd_name,rd);
-    csvwrite(ra_name,ra);
+    sf = 'hbd_and_angles_\';
+    
+    if writeFiles
+        wd_name = strcat(folder,sf, D(i).name,'_wd.csv');
+        wa_name = strcat(folder,sf, D(i).name,'_wa.csv');
+        rd_name = strcat(folder,sf, D(i).name,'_rd.csv');
+        ra_name = strcat(folder,sf, D(i).name,'_ra.csv');
+        
+        csvwrite(wd_name,wd);
+        csvwrite(wa_name,wa);
+        csvwrite(rd_name,rd);
+        csvwrite(ra_name,ra);
+    end
+
 
 end
 
