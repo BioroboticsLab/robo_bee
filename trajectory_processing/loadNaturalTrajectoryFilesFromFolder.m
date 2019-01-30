@@ -65,6 +65,7 @@ for i = 1:length(D)
     Params.filenames{i} = strtok(D(i).name,'.');
 
 end
-  
+% save that we are not robotic
+Params.isRobot = 0;
    
 end

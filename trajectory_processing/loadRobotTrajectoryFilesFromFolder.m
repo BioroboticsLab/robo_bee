@@ -21,11 +21,21 @@ Params.H = H;
 % load waggle index matrix
 i_path = strcat(folder,'\video\I.mat');
 I = importdata(i_path);
-Params.I = I;
+
 
 % all tracks
 folder = strcat(folder,'\trajectories');
 D = dir(fullfile(folder, fileending));
+
+% save the data type
+Params.fileending = fileending;
+%framerate
+Params.framerate = 50; % for all robotic dances, framerate is 50
+
+% robotic dances do have space norm 5
+% HACK: 5 / 5 is 1--> for robotic dances (and s_n is (5cm / s_n pixel))
+% this is not specified in the file header
+Params.space_norm = 5; 
 
 % iterate over track
 for i = 1:length(D)
@@ -57,14 +67,11 @@ for i = 1:length(D)
 
 end
   
-    % save the data type
-    Params.fileending = fileending;
-    %framerate
-    Params.framerate = 50; % for all robotic dances, framerate is 50
-     
-    % robotic dances do have space norm 5
-    % HACK: 5 / 5 is 1--> for robotic dances (and s_n is (5cm / s_n pixel))
-    % this is not specified in the file header
-    Params.space_norm = 5; 
+% synchronize the start of waggles with the start of the dancer
+I = 10*(I - Params.T{Params.id_dancer}(1,1));
+Params.I = I;
+
+% save that we are robotic
+Params.isRobot = 1;
    
 end
