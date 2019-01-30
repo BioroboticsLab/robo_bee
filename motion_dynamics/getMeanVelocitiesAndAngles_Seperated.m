@@ -43,11 +43,18 @@ return_ang = [];
 
 
 for i = 2 : size(W,1)-1
+    % waggle return waggle return
+    %first half
+    start_waggle1 = W(i-1, 1); % start is the beginn of the previous waggle
+    stop_waggle1  = W(i-1, 2); % and the end of the previous waggle
+    start_return1 = W(i-1, 2)+1; % after the end of waggle, return run starts
+    stop_return1  = W(i, 1)-1; % return run lasts until next waggle begins
     
-    start_waggle = W(i-1, 1); % start is the beginn of the previous waggle
-    stop_waggle  = W(i-1, 2); % and the end of the previous waggle
-    start_return = W(i-1, 2)+1; % after the end of waggle, return run starts
-    stop_return  = W(i, 1)-1; % return run lasts until next waggle begins
+    % second half
+    start_waggle2 = W(i, 1); % 
+    stop_waggle2  = W(i, 2); % 
+    start_return2 = W(i, 2)+1; % 
+    stop_return2  = W(i+1, 1)-1; % 
     
    
     % so sah es im alten code aus. aber wird da nicht i zwei mal verwendet?
@@ -58,61 +65,81 @@ for i = 2 : size(W,1)-1
     %   stop    = W(i+1, 1) - 1;
     
     % if waggle starts after data, skip this waggle
-    if ~(stop_return < length(dx))
+    if ~(stop_return2 < length(dx))
         fprintf('Sequence #%d (%d : %d) out of global data bounds. Continuing.\n', i - 1, W(i-1, 1), W(i+1, 1))
         continue
     end
     
     % do not use them double --> do not start with left
-    disp(W(i-1, 2));
-    disp(W(i-1, 2)+ 250);
-    if sum(da(W(i-1, 2) : W(i-1, 2) + 250)) < 0
+    % look one second ahead
+    if sum(da(W(i-1, 2) : W(i-1, 2) + framerate)) < 0
         fprintf('left turn? %d\n', i)
         continue
     end
     
-    % forward velocities
-    q       = v_forw( start_waggle : stop_waggle );
+    % TODO: put in function!
+    % first half
+    % forward velocities 
+    q       = v_forw( start_waggle1 : stop_waggle1 );
     Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_fv  = [waggle_fv; Q'];
     
-    q       = v_forw( start_return : stop_return );
+    q       = v_forw( start_return1 : stop_return1 );
     Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_fv  = [return_fv; Q'];
     
     % sideward velocities 
-    q       = v_side( start_waggle : stop_waggle );
+    q       = v_side( start_waggle1 : stop_waggle1 );
     Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_sv  = [waggle_sv; Q'];
     
-    q       = v_side( start_return : stop_return );
+    q       = v_side( start_return1 : stop_return1 );
     Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_sv  = [return_sv; Q'];
     
     % angles
-    q       = da( start_waggle : stop_waggle );
+    q       = da( start_waggle1 : stop_waggle1 );
     Q       = resampleZeroPaddingResistant(q, resample_waggle1);
     waggle_ang  = [waggle_ang; Q'];
     
-    q       = da( start_return : stop_return );
+    q       = da( start_return1 : stop_return1 );
     Q       = resampleZeroPaddingResistant(q, resample_return1);
     return_ang  = [return_ang; Q'];
     
     
-%     q   = dx( start : stop );
-%     Q   = resample_around_mean(q, resample_size);
-%     DX  = [DX; Q'];
-%     
-%     q   = dy( start : stop );
-%     Q   = resample_around_mean(q, resample_size);
-%     DY  = [DY; Q'];
-%         
-%     q   = vx( start : stop);
-%     Q   = resample_around_mean(q, resample_size);
-%     DVX = [DVX; Q'];
-%     
-%     q   = vy( start : stop);
-%     Q   = resample_around_mean(q, resample_size);
-%     DVY = [DVY; Q'];
+    % second half
+       % forward velocities 
+    q       = v_forw( start_waggle2 : stop_waggle2 );
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
+    waggle_fv  = [waggle_fv; Q'];
     
+    q       = v_forw( start_return1 : stop_return1 );
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
+    return_fv  = [return_fv; Q'];
+    
+    % sideward velocities 
+    q       = v_side( start_waggle1 : stop_waggle1 );
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
+    waggle_sv  = [waggle_sv; Q'];
+    
+    q       = v_side( start_return1 : stop_return1 );
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
+    return_sv  = [return_sv; Q'];
+    
+    % angles
+    q       = da( start_waggle1 : stop_waggle1 );
+    Q       = resampleZeroPaddingResistant(q, resample_waggle1);
+    waggle_ang  = [waggle_ang; Q'];
+    
+    q       = da( start_return1 : stop_return1 );
+    Q       = resampleZeroPaddingResistant(q, resample_return1);
+    return_ang  = [return_ang; Q'];
+     
+    
+end
+
+function array = resampledDataReturn(data, start, stop, length)
+    q       = data( start : stop );
+    Q       = resampleZeroPaddingResistant(q, length);
+    array  = [array; Q'];
 end

@@ -5,5 +5,9 @@ The **trajectory_processing** folder provides methods to rectify a given track, 
 
 The **visualization** folder contains a script to draw trajectories of followers and dancers on given videos for validation purpose. Use the `displayAllTrajectoriesInFolder` function to start displaying. You need to provide one of the following fileendings `*.raw`, `*.rect`, or `*.ups` to load the corresponding data.
 
-The **analyses** folder provides scripts to reproduce the results presented in the paper. 
+The **analyses** folder provides scripts to reproduce the results presented in figure 6 in the paper. 
 * `analyzeHeadBodyDistancesAndAngles`: To analyze the head-body distances and the angle between dancer and follwer.
+
+The **motion_dynamics** folder provides scripts to reproduce the results about motion dynamics (figure 7) presented in the paper. 
+* `analyzeMotionDynamics`: To analyze the forward, sideward and angular velocity for dancer and follwer.
+
